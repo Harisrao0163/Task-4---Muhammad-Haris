@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Request — Form Validation Engine</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <main class="stage">
+
+    <!-- ============ LEFT: FORM PANEL ============ -->
+    <section class="panel panel--form">
+
+      <header class="masthead">
+        <p class="eyebrow">DecodeLabs / Frontend Track</p>
+        <h1 class="title">Architecture of Trust</h1>
+        <p class="subtitle">Every field below passes through a live inspection checkpoint before it's accepted. Try typing something invalid — then fix it.</p>
+      </header>
+
+      <form id="checkpointForm" class="form" novalidate autocomplete="off">
+
+        <!-- FULL NAME -->
+        <div class="field" data-field="fullName">
+          <label for="fullName">Full name</label>
+          <div class="input-shell">
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Jordan Avery"
+              aria-describedby="fullName-error fullName-hint"
+              aria-invalid="false"
+              required
+            >
+            <span class="status-icon" aria-hidden="true"></span>
+          </div>
+          <p class="hint" id="fullName-hint">At least 2 characters, letters only.</p>
+          <p class="error" id="fullName-error" role="alert"></p>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="field" data-field="email">
+          <label for="email">Email address</label>
+          <div class="input-shell">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="jordan@domain.com"
+              aria-describedby="email-error email-hint"
+              aria-invalid="false"
+              required
+            >
+            <span class="status-icon" aria-hidden="true"></span>
+          </div>
+          <p class="hint" id="email-hint">Standard format: name@domain.tld</p>
+          <p class="error" id="email-error" role="alert"></p>
+        </div>
+
+        <!-- PHONE -->
+        <div class="field" data-field="phone">
+          <label for="phone">Phone number</label>
+          <div class="input-shell">
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="+92 300 1234567"
+              aria-describedby="phone-error phone-hint"
+              aria-invalid="false"
+              required
+            >
+            <span class="status-icon" aria-hidden="true"></span>
+          </div>
+          <p class="hint" id="phone-hint">10–15 digits. Spaces, dashes, and + are fine.</p>
+          <p class="error" id="phone-error" role="alert"></p>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="field" data-field="password">
+          <label for="password">Password</label>
+          <div class="input-shell">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              aria-describedby="password-error password-hint"
+              aria-invalid="false"
+              required
+            >
+            <button type="button" class="toggle-visibility" data-target="password" aria-label="Show password">
+              <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+
+          <ul class="policy-list" id="password-hint">
+            <li data-rule="length"><span class="dot" aria-hidden="true"></span>8+ characters</li>
+            <li data-rule="upper"><span class="dot" aria-hidden="true"></span>One uppercase letter</li>
+            <li data-rule="lower"><span class="dot" aria-hidden="true"></span>One lowercase letter</li>
+            <li data-rule="digit"><span class="dot" aria-hidden="true"></span>One number</li>
+            <li data-rule="special"><span class="dot" aria-hidden="true"></span>One special character (#?!@$%^&amp;*-)</li>
+          </ul>
+          <p class="error" id="password-error" role="alert"></p>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="field" data-field="confirmPassword">
+          <label for="confirmPassword">Confirm password</label>
+          <div class="input-shell">
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="••••••••"
+              aria-describedby="confirmPassword-error"
+              aria-invalid="false"
+              required
+            >
+            <button type="button" class="toggle-visibility" data-target="confirmPassword" aria-label="Show password">
+              <svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <p class="error" id="confirmPassword-error" role="alert"></p>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="submit-label">Submit request</span>
+        </button>
+
+        <p class="form-banner" id="formBanner" role="alert" aria-live="assertive"></p>
+
+      </form>
+    </section>
+
+    <!-- ============ RIGHT: LIVE LEDGER ============ -->
+    <aside class="panel panel--ledger" aria-hidden="false">
+      <div class="ledger-sticky">
+        <p class="eyebrow eyebrow--ledger">Inspection ledger</p>
+        <h2 class="ledger-title">Live checkpoint status</h2>
+        <p class="ledger-sub">Each field reports here the moment it's checked — on blur, or on submit.</p>
+
+        <ol class="ledger-list" id="ledgerList">
+          <li class="ledger-row" data-ledger="fullName">
+            <span class="ledger-index">01</span>
+            <span class="ledger-name">Full name</span>
+            <span class="ledger-state" data-state="idle">Awaiting input</span>
+          </li>
+          <li class="ledger-row" data-ledger="email">
+            <span class="ledger-index">02</span>
+            <span class="ledger-name">Email address</span>
+            <span class="ledger-state" data-state="idle">Awaiting input</span>
+          </li>
+          <li class="ledger-row" data-ledger="phone">
+            <span class="ledger-index">03</span>
+            <span class="ledger-name">Phone number</span>
+            <span class="ledger-state" data-state="idle">Awaiting input</span>
+          </li>
+          <li class="ledger-row" data-ledger="password">
+            <span class="ledger-index">04</span>
+            <span class="ledger-name">Password</span>
+            <span class="ledger-state" data-state="idle">Awaiting input</span>
+          </li>
+          <li class="ledger-row" data-ledger="confirmPassword">
+            <span class="ledger-index">05</span>
+            <span class="ledger-name">Confirm password</span>
+            <span class="ledger-state" data-state="idle">Awaiting input</span>
+          </li>
+        </ol>
+
+        <div class="payload-preview" id="payloadPreview">
+          <p class="payload-label">Packaged payload</p>
+          <pre class="payload-code" id="payloadCode">{ }</pre>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <div class="sr-only" aria-live="polite" id="srAnnouncer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

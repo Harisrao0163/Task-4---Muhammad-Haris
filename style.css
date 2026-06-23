@@ -1,0 +1,473 @@
+/* ============================================================
+   ARCHITECTURE OF TRUST — Form Design & Validation
+   Design tokens
+   ============================================================ */
+:root {
+  /* Color */
+  --ink:        #0F172A;   /* near-black navy — headers, primary text */
+  --slate:      #475569;   /* secondary text */
+  --slate-soft: #94A3B8;   /* tertiary / placeholder */
+  --paper:      #F7F7F3;   /* warm paper background */
+  --panel:      #FFFFFF;   /* card / input surface */
+  --line:       #E2E1DC;   /* hairline borders */
+  --signal:     #2A5CCB;   /* primary blue — focus, links, ledger accents */
+  --signal-dim: #E8EEFC;
+  --pass:       #15803D;   /* emerald — approved */
+  --pass-bg:    #EDF7EE;
+  --fail:       #B42318;   /* red — rejected */
+  --fail-bg:    #FCEDEC;
+  --amber:      #92600A;   /* idle/pending tone for ledger */
+  --amber-bg:   #FBF3E4;
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* Layout */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --max-form-width: 460px;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  src: local('Georgia');
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  * { scroll-behavior: smooth; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Background grid texture — nods to the deck's blueprint motif
+   ============================================================ */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse at top left, black 0%, transparent 70%);
+}
+
+/* ============================================================
+   Stage / two-panel layout
+   ============================================================ */
+.stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+}
+
+.panel {
+  padding: clamp(28px, 5vw, 72px) clamp(20px, 5vw, 64px);
+}
+
+.panel--form {
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel--ledger {
+  background: var(--ink);
+  color: var(--paper);
+  display: flex;
+  align-items: flex-start;
+}
+
+.ledger-sticky {
+  position: sticky;
+  top: clamp(28px, 5vw, 72px);
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ============================================================
+   Masthead
+   ============================================================ */
+.masthead { max-width: var(--max-form-width); margin: 0 auto 36px; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal);
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+.eyebrow--ledger { color: #8FB1F0; }
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(30px, 4vw, 40px);
+  line-height: 1.08;
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--slate);
+  margin: 0;
+  max-width: 42ch;
+}
+
+/* ============================================================
+   Form
+   ============================================================ */
+.form {
+  max-width: var(--max-form-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.field { margin-bottom: 22px; }
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 7px;
+  letter-spacing: 0.01em;
+}
+
+.input-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-shell input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 13px 44px 13px 14px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-shell input::placeholder { color: var(--slate-soft); }
+
+.input-shell input:focus {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px var(--signal-dim);
+}
+
+/* Validation states applied via JS adding a class to .field */
+.field.is-valid .input-shell input {
+  border-color: var(--pass);
+  background: var(--pass-bg);
+}
+.field.is-invalid .input-shell input {
+  border-color: var(--fail);
+  background: var(--fail-bg);
+}
+.field.is-invalid .input-shell input:focus {
+  box-shadow: 0 0 0 3px var(--fail-bg);
+}
+
+.status-icon {
+  position: absolute;
+  right: 14px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.field.is-valid .status-icon,
+.field.is-invalid .status-icon {
+  opacity: 1;
+}
+
+.field.is-valid .status-icon::before {
+  content: "";
+  display: block;
+  width: 100%; height: 100%;
+  background: var(--pass);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.field.is-invalid .status-icon::before {
+  content: "";
+  display: block;
+  width: 100%; height: 100%;
+  background: var(--fail);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hint {
+  font-size: 12.5px;
+  color: var(--slate-soft);
+  margin: 7px 0 0;
+}
+
+.error {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--fail);
+  margin: 7px 0 0;
+  min-height: 0;
+  line-height: 1.5;
+}
+
+.error:empty { display: none; }
+
+/* Password visibility toggle */
+.toggle-visibility {
+  position: absolute;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--slate-soft);
+  border-radius: 6px;
+}
+.toggle-visibility:hover { color: var(--slate); background: var(--line); }
+.toggle-visibility:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.icon-eye { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Password policy checklist */
+.policy-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+}
+.policy-list li {
+  font-size: 12.5px;
+  color: var(--slate-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s ease;
+}
+.policy-list .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--slate-soft);
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.policy-list li.met { color: var(--pass); }
+.policy-list li.met .dot { background: var(--pass); }
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 15px 20px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.submit-btn:hover { background: #1E293B; }
+.submit-btn:active { transform: translateY(1px); }
+.submit-btn:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+.form-banner {
+  margin: 16px 0 0;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  min-height: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.2s ease, opacity 0.2s ease, padding 0.2s ease;
+}
+.form-banner.show {
+  max-height: 80px;
+  opacity: 1;
+  padding: 13px 16px;
+}
+.form-banner.success { background: var(--pass-bg); color: var(--pass); }
+.form-banner.fail    { background: var(--fail-bg); color: var(--fail); }
+
+/* ============================================================
+   Ledger (right panel)
+   ============================================================ */
+.ledger-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: #fff;
+}
+.ledger-sub {
+  font-size: 13.5px;
+  color: #9AA5B8;
+  line-height: 1.55;
+  margin: 0 0 28px;
+  max-width: 38ch;
+}
+
+.ledger-list {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  border-top: 1px solid #283143;
+}
+
+.ledger-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #283143;
+}
+
+.ledger-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #5C6B85;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.ledger-name {
+  font-size: 13.5px;
+  color: #D7DBE5;
+  flex: 1;
+}
+
+.ledger-state {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 4px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.ledger-state[data-state="idle"]    { background: #1E293B; color: #7E8CA3; }
+.ledger-state[data-state="pass"]    { background: rgba(21,128,61,0.18); color: #4ADE80; }
+.ledger-state[data-state="fail"]    { background: rgba(180,35,24,0.18); color: #F87171; }
+
+.payload-preview {
+  background: #161D2E;
+  border: 1px solid #283143;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.payload-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5C6B85;
+  margin: 0 0 10px;
+}
+.payload-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #8FB1F0;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ============================================================
+   Responsive breakpoints
+   ============================================================ */
+
+/* Large desktop: give the stage breathing room, cap width */
+@media (min-width: 1440px) {
+  .stage { max-width: 1440px; margin: 0 auto; }
+}
+
+/* Tablet landscape / small laptop: narrow the ledger column */
+@media (max-width: 1024px) {
+  .stage { grid-template-columns: 1.3fr 1fr; }
+  .panel { padding: 40px 32px; }
+}
+
+/* Tablet portrait: stack panels, ledger becomes a summary below */
+@media (max-width: 860px) {
+  .stage { grid-template-columns: 1fr; }
+  .panel--ledger { order: 2; }
+  .panel--form { order: 1; }
+  .ledger-sticky { position: static; max-width: 100%; }
+  .panel--ledger { padding-top: 36px; padding-bottom: 56px; }
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .panel { padding: 28px 18px; }
+  .title { font-size: 26px; }
+  .subtitle { font-size: 14px; }
+  .field { margin-bottom: 18px; }
+  .input-shell input { padding: 12px 40px 12px 13px; font-size: 15px; }
+  .ledger-title { font-size: 20px; }
+  .ledger-row { padding: 11px 0; }
+}
+
+@media (max-width: 380px) {
+  .panel { padding: 22px 14px; }
+  .eyebrow { font-size: 10px; }
+  .title { font-size: 23px; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
