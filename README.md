@@ -117,7 +117,7 @@ This project helped strengthen my understanding of:
 
 @Muhammad Haris
 
-LinkedIn: https://www.linkedin.com/in/your-linkedin-profile/
+LinkedIn: https://www.linkedin.com/posts/muhammadharisrao_frontenddevelopment-javascript-webdevelopment-ugcPost-7475176725719437313-3E7g/?utm_source=share&utm_medium=member_android&rcm=ACoAAFdKNqcBmpzzPRx9hR8HBasNLUjIs7A7pc4
 
 📄 License
 
